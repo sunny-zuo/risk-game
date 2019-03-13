@@ -4,6 +4,7 @@ public class GameBoard {
 	
 	public static GameTile[][] gameBoard = new GameTile[5][5];
 	public static int playerGold;
+	public static int aiGold;
 	
 	public static void createGame() {
 		// Generate an array of GameTile objects that store information
@@ -27,6 +28,7 @@ public class GameBoard {
 		gameBoard[4][0].troops = 5;
 		
 		System.out.println(drawGameState());
+		InputHandler.handleInput();
 
 	}
 	
@@ -40,8 +42,15 @@ public class GameBoard {
 			for (int j = 0; j < 5; j++) {
 				gameBoard += drawTile(i, j) + " ";
 			}
-			gameBoard += "\n";
+			if (i == 0) {
+				gameBoard += "| Gold Balance: " + playerGold + "\n";
+			}
+			else {
+				gameBoard += "|\n";
+			}
 		}
+		
+		gameBoard += "  ——————————————————————\nEnter a move: ";
 		
 		return gameBoard;
 	}
