@@ -1,14 +1,23 @@
 package civGame;
 
+import java.util.Scanner;
+
 public class InputHandler {
-	public static String lastInput;
-	public static void handleInput() {
+	public String lastInput;
+	public Scanner inputScanner = new Scanner(System.in);
+	private String[] commandArray;
+	
+	public void handleInput() {
 		try {
-			lastInput = InputScanner.nextLine();
-			System.out.println(lastInput);
+			parseInput(inputScanner.nextLine());
 		}
 		catch (Exception e) {
 			System.out.println("Please enter a valid command.");
 		}
+	}
+	
+	private void parseInput(String input) {
+		commandArray = input.split(" ");
+		System.out.println(commandArray[0]);
 	}
 }
