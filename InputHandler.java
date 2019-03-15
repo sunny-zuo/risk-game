@@ -18,6 +18,15 @@ public class InputHandler {
 	
 	private void parseInput(String input) {
 		commandArray = input.split(" ");
-		System.out.println(commandArray[0]);
+		/* Divide input into an array and separate them by spaces to allow
+		 * each individual command part to be handled
+		 */
+		if (commandArray[0].matches("help")) {
+			System.out.println("List of Possible Commands:"
+			+ "\n help - lists possible commands");
+		}
+		else {
+			System.out.println("Type 'help' to get a list of commands");
+		}
 	}
 }

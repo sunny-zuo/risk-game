@@ -34,21 +34,53 @@ public class GameBoard {
 		String gameBoard = "    1   2   3   4   5  \n";
 		String coordY[] = {"A", "B", "C", "D", "E"};
 		
+		// loop through each line and combine each tile to create the game board
 		for (int i = 0; i < 5; i++) {
 			gameBoard += coordY[i] + " |";
 			for (int j = 0; j < 5; j++) {
 				gameBoard += drawTile(i, j) + " ";
 			}
-			if (i == 0) {
+			
+			// Draw the lines to the right of the board and add any information needed
+			switch (i) {
+			case 1:
 				gameBoard += "| Gold Balance: " + playerGold + "\n";
-			}
-			else {
+				break;
+			case 2:
+				gameBoard += "| Estimated Gold Income: " + calculateGoldIncome("PC") + "\n";
+				break;
+			default:
 				gameBoard += "|\n";
+				break;
 			}
 		}
 		gameBoard += "  ——————————————————————\nEnter a move: ";
 		
 		System.out.print(gameBoard);
+	}
+	
+	public static int calculateGoldIncome(String player) {
+		int goldIncome = 0;
+		// If gameBoard exists, increase goldIncome by the tiles and buildings controlled by the player
+		if (gameBoard != null) {
+			for (int i = 0; i < 5; i++) {
+				for (int j = 0; j < 5; j++) {
+					if (tileControl(i, j) == player) {
+						if (buildingInfo(i, j) == "hut" ) {
+							goldIncome += 4;
+						}
+						else {
+							goldIncome += 1;
+						}
+					}
+				}
+			}
+			
+			return goldIncome;
+		}
+		else {
+			throw new IllegalArgumentException("Game board does not exist.");
+		}
 	}
 	
 	public static String tileControl(int x, int y) {
@@ -101,6 +133,7 @@ public class GameBoard {
 	}
 
 	public static String drawTile(int x, int y) {
+		// create the String that represents the tile based on the control
 		if (gameBoard[x][y] != null) {
 			switch (tileControl(x, y)) {
 				case "NONE":
