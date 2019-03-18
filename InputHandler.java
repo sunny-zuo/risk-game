@@ -21,12 +21,28 @@ public class InputHandler {
 		/* Divide input into an array and separate them by spaces to allow
 		 * each individual command part to be handled
 		 */
-		if (commandArray[0].matches("help")) {
-			System.out.println("List of Possible Commands:"
-			+ "\n help - lists possible commands");
+		System.out.println("------------------------------------------------------");
+		
+		if (commandArray[0].equalsIgnoreCase("help")) {
+			runHelpCommand();
+		}
+		else if (commandArray[0].equalsIgnoreCase("move")) {
+			runMoveCommand(commandArray);
 		}
 		else {
-			System.out.println("Type 'help' to get a list of commands");
+			System.out.println("Invalid command. Type 'help' to get a list of commands");
 		}
+
+		System.out.println("------------------------------------------------------");
+	}
+	
+	private void runHelpCommand() {
+		// List all possible commands
+		System.out.println("> List of Possible Moves:"
+			+ "\n   help - lists possible moves"
+			+ "\n   move [oldPosition] [newPosition] - moves troops from one tile to another");
+	}
+	private void runMoveCommand(String[] commandArray) {
+		// Move troops from one tile to another
 	}
 }

@@ -26,10 +26,12 @@ public class GameBoard {
 		gameBoard[0][4].troops = 5;
 		gameBoard[4][0].control = "NPC";
 		gameBoard[4][0].troops = 5;
+		
+		playerGold = 20;
+		aiGold = 20;
 	}
 	
 	public static void drawGameState() {
-		System.out.println("\n\n\n\n\n");
 		// Method that draws the game board
 		String gameBoard = "    1   2   3   4   5  \n";
 		String coordY[] = {"A", "B", "C", "D", "E"};
