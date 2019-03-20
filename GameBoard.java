@@ -22,10 +22,10 @@ public class GameBoard {
 		
 		// Set the player and AI's starting location (two corners)
 		// 0 = no control, 1 = player control, 2 = AI control
-		gameBoard[0][4].control = "PC";
-		gameBoard[0][4].troops = 5;
-		gameBoard[4][0].control = "NPC";
-		gameBoard[4][0].troops = 5;
+		gameBoard[0][0].control = "PC";
+		gameBoard[0][0].troops = 5;
+		gameBoard[4][4].control = "NPC";
+		gameBoard[4][4].troops = 5;
 		
 		playerGold = 20;
 		aiGold = 20;
@@ -45,6 +45,9 @@ public class GameBoard {
 			
 			// Draw the lines to the right of the board and add any information needed
 			switch (i) {
+			case 0:
+				gameBoard += "| [X] = Controlled by You \n";
+				break;
 			case 1:
 				gameBoard += "| Gold Balance: " + playerGold + "\n";
 				break;

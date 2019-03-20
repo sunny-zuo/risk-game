@@ -12,7 +12,7 @@ public class InputHandler {
 			parseInput(inputScanner.nextLine());
 		}
 		catch (Exception e) {
-			System.out.println("Please enter a valid command.");
+			System.out.println("error:" + e);
 		}
 	}
 	
@@ -22,7 +22,6 @@ public class InputHandler {
 		 * each individual command part to be handled
 		 */
 		System.out.println("------------------------------------------------------");
-		
 		if (commandArray[0].equalsIgnoreCase("help")) {
 			runHelpCommand();
 		}
@@ -40,9 +39,10 @@ public class InputHandler {
 		// List all possible commands
 		System.out.println("> List of Possible Moves:"
 			+ "\n   help - lists possible moves"
-			+ "\n   move [oldPosition] [newPosition] - moves troops from one tile to another");
+			+ "\n   move [oldPosition] [newPosition] [troopCount] - moves troops from one tile to another");
 	}
 	private void runMoveCommand(String[] commandArray) {
 		// Move troops from one tile to another
+		GameEngine.moveUnits(commandArray[1], commandArray[2], Integer.valueOf(commandArray[3]), "PC");
 	}
 }

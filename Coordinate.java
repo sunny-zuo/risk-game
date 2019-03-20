@@ -10,8 +10,8 @@ final class Coordinate {
 		// Check to ensure the coordinates are in proper format (letter A-E and number 1-5)
 		if (checkValidCoordinate(testCoord)) {
 			// Determine the position of the alphabet the first character is located in
-			x = alphabet.indexOf(Character.toLowerCase(testCoord.charAt(0))) + 1;
-			y = testCoord.charAt(1);
+			x = alphabet.indexOf(Character.toLowerCase(testCoord.charAt(0)));
+			y = (testCoord.charAt(1) - '0') - 1;
 		}
 		else {
 			throw new IllegalArgumentException("Incorrect coordinate format");
