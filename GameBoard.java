@@ -71,11 +71,14 @@ public class GameBoard {
 			for (int i = 0; i < 5; i++) {
 				for (int j = 0; j < 5; j++) {
 					if (tileControl(i, j) == player) {
-						if (buildingInfo(i, j) == "hut" ) {
-							goldIncome += 4;
+						if (buildingInfo(i, j) == "B" ) {
+							goldIncome += GameEngine.buildingRate;
 						}
 						else {
-							goldIncome += 1;
+							goldIncome += GameEngine.tileRate;
+							if (troopCount(i,j) != 0) {
+								goldIncome -= GameEngine.unitUpkeep * troopCount(i,j);
+							}
 						}
 					}
 				}
