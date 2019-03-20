@@ -38,6 +38,11 @@ public class GameEngine {
 			System.out.println("Invalid coordinates entered.");
 			return;
 		}
+		// Validate that the user is moving to an adjacent tile
+		if (!validateCoordinates(newPos, "PC")) {
+			System.out.println("You can only move to tiles adjacent to ones you control.");
+			return;
+		}
 		// Check to see if existing tile is controlled by the correct player
 		if (GameBoard.gameBoard[oldPos.xPos()][oldPos.yPos()].control == control) {
 			// Check to see if new tile is controlled by correct player or uncontrolled
@@ -68,7 +73,7 @@ public class GameEngine {
 			}
 		}
 		else {
-			System.out.println("You do not control those tiles.");
+			System.out.println("You do not control the tile you are moving from.");
 		}
 	}
 	
@@ -76,14 +81,21 @@ public class GameEngine {
 		int x = newTile.xPos();
 		int y  = newTile.yPos();
 		
-		for (int i = -1; i < 1; i++) {
-			for (int ii = -1; ii < 1; ii++) {
-				if (GameBoard.gameBoard[x + i][y + i].control == control) {
-					return true;
+		// Check to see if any of the surrounding tiles are controlled by the user
+		// For loops to check the 3x3 grid around the single tile
+		for (int i = -1; i <= 1; i++) {
+			for (int ii = -1; ii <= 1; ii++) {
+				try {
+					if (GameBoard.gameBoard[x + i][y + ii].control == control) {
+						// Only allow movement if an adjacent tile is controlled by the player
+						return true;
+					}
+				} catch (Exception e) {
+					// do nothing
 				}
 			}
 		}
-		
+		// Disallow movement
 		return false;
 	}
 }
