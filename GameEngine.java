@@ -65,7 +65,7 @@ public class GameEngine {
 					}
 				}
 				else {
-					System.out.println("You have already moved troops from that tile.");
+					System.out.println("You cannot move troops from that tile this turn.");
 				}
 			}
 			else {
