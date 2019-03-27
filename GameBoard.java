@@ -23,7 +23,7 @@ public class GameBoard {
 		// Set the player and AI's starting location (two corners)
 		// 0 = no control, 1 = player control, 2 = AI control
 		gameBoard[0][0].control = "PC";
-		gameBoard[0][0].troops = 20;
+		gameBoard[0][0].troops = 5;
 		gameBoard[4][4].control = "NPC";
 		gameBoard[4][4].troops = 5;
 		

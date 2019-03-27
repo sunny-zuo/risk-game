@@ -125,8 +125,23 @@ public class GameEngine {
 			return;
 		}
 		// Validate that the user is moving to an adjacent tile
-		if (!validateCoordinates(newPos, "PC")) {
+		if (!validateCoordinates(newPos, control)) {
 			System.out.println("You can only attack tiles adjacent to ones you control.");
+			return;
+		}
+		// Validate that the user is attacking a tile controlled by the opponent
+		if (GameBoard.tileControl(newPos.xPos(), newPos.yPos()) == "NONE") {
+			System.out.println("You cannot attack tiles that are unclaimed.");
+			return;
+		}
+		// Validate that the user is attacking from a tile they control
+		if (GameBoard.tileControl(oldPos.xPos(), oldPos.yPos()) != control) {
+			System.out.println("You must attack from tiles you control.");
+			return;
+		}
+		// Validate that the user is not attacking themselves
+		if (GameBoard.tileControl(newPos.xPos(), newPos.yPos()) == control) {
+			System.out.println("You cannot attack yourself.");
 			return;
 		}
 		
@@ -163,6 +178,9 @@ public class GameEngine {
 				defRolls[0] = defRolls[1];
 				defRolls[1] = temp1;
 			}
+			
+			System.out.println("atk rolls: " + atkRolls[0] + atkRolls[1] + atkRolls[2]);
+			System.out.println("def rolls: " + defRolls[0] + defRolls[1]);
 			
 			if (atkRolls[0] > defRolls[0]) { // if attacker rolled higher than defending, they win
 				defTroops -= 1;
