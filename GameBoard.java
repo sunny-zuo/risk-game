@@ -23,12 +23,12 @@ public class GameBoard {
 		// Set the player and AI's starting location (two corners)
 		// 0 = no control, 1 = player control, 2 = AI control
 		gameBoard[0][0].control = "PC";
-		gameBoard[0][0].troops = 5;
+		gameBoard[0][0].troops = 20;
 		gameBoard[4][4].control = "NPC";
 		gameBoard[4][4].troops = 5;
 		
-		playerGold = 20;
-		aiGold = 20;
+		playerGold = 23;
+		aiGold = 23;
 	}
 	
 	public static void drawGameState() {
@@ -59,7 +59,7 @@ public class GameBoard {
 				break;
 			}
 		}
-		gameBoard += "  ——————————————————————\nEnter a move: ";
+		gameBoard += "  â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”\nEnter a move: ";
 		
 		System.out.print(gameBoard);
 	}

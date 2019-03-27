@@ -108,12 +108,102 @@ public class GameEngine {
 		}
 			
 	}
+	
+	public static void attackTile(String oldTile, String newTile, String control) {
+		Coordinate oldPos;
+		Coordinate newPos;
+		int atkTroops;
+		int defTroops;
+		
+		try {
+			// Create array coordinates based on command input
+			oldPos = new Coordinate(oldTile);
+			newPos = new Coordinate(newTile);
+		} catch (Exception e) {
+			// If invalid coordinates were entered, exit the method
+			System.out.println("Invalid coordinates entered.");
+			return;
+		}
+		// Validate that the user is moving to an adjacent tile
+		if (!validateCoordinates(newPos, "PC")) {
+			System.out.println("You can only attack tiles adjacent to ones you control.");
+			return;
+		}
+		
+		atkTroops = GameBoard.troopCount(oldPos.xPos(), oldPos.yPos());
+		defTroops = GameBoard.troopCount(newPos.xPos(), newPos.yPos());
+		
+		if (atkTroops < 2) {
+			System.out.println("You must have at least two troops to attack");
+			return;
+		}
+		
+		while (atkTroops > 1 && defTroops > 0) {
+			// Roll up to 3 dice for the attacker and store it in an array
+			// 1 dice is used for each attacker unit, up to a maximum of 3 per battle. The attacker must have a minimum of 1 troop leftover.
+			// This implements the same system used in Risk.
+			int atkRolls[] = new int[3];
+			for (int i = 0; i < Math.min(atkTroops - 1, 3); i++) {
+				atkRolls[i] = (int) Math.ceil(Math.random() * 6);
+			}
+			
+			// Sort the array in descending order
+			Arrays.sort(atkRolls); // sorts in ascending order
+			int temp = atkRolls[2]; // switch the first and third value
+			atkRolls[2] = atkRolls[0];
+			atkRolls[0] = temp;
+			
+			// Roll up to 2 dice for the defender and store it in an array
+			int defRolls[] = new int[2];
+			for (int i = 0; i < Math.min(defTroops, 2); i++) {
+				defRolls[i] = (int) Math.ceil(Math.random() * 6);
+			}
+			if (defRolls[1] > defRolls[0]) { // sort the rolls in descending order
+				int temp1 = defRolls[0];
+				defRolls[0] = defRolls[1];
+				defRolls[1] = temp1;
+			}
+			
+			if (atkRolls[0] > defRolls[0]) { // if attacker rolled higher than defending, they win
+				defTroops -= 1;
+			}
+			else { // else defender wins
+				atkTroops -= 1;
+			}
+			
+			if (atkTroops > 1 && defTroops > 0) { // if attacker has troops to attack with and defender has troops to defend with, do second battle
+				if (atkRolls[1] > defRolls[1]) {
+					defTroops -= 1;
+				}
+				else {
+					atkTroops -= 1;
+				}
+			}
+		}
+		
+		if (atkTroops > 1) {
+			System.out.println("You won the battle for " + newTile + " and killed " + (GameBoard.troopCount(newPos.xPos(), newPos.yPos()) - defTroops) 
+					+ " troops, losing " + (GameBoard.troopCount(oldPos.xPos(), oldPos.yPos()) - atkTroops) + " troops in the process.");
+			// Set new game board status and force the player to move the lesser of 3 troops or the troops they control minus 1 to the new tile
+			GameBoard.gameBoard[oldPos.xPos()][oldPos.yPos()].troops = (atkTroops - Math.min(3, atkTroops - 1));
+			GameBoard.gameBoard[newPos.xPos()][newPos.yPos()].troops = Math.min(3, atkTroops - 1);
+			GameBoard.gameBoard[newPos.xPos()][newPos.yPos()].control = control;
+		}
+		else {
+			System.out.println("You lost the battle for " + newTile + " and killed " + (GameBoard.troopCount(newPos.xPos(), newPos.yPos()) - defTroops) 
+					+ " troops, losing " + (GameBoard.troopCount(oldPos.xPos(), oldPos.yPos()) - atkTroops) + " troops in the process.");
+			// Set each tile to the number of troops remaining. No change of control as attacker was unsuccessful.
+			GameBoard.gameBoard[oldPos.xPos()][oldPos.yPos()].troops = atkTroops;
+			GameBoard.gameBoard[newPos.xPos()][newPos.yPos()].troops = defTroops;
+		}
+
+	}
 	public static Boolean validateCoordinates(Coordinate newTile, String control) {
 		int x = newTile.xPos();
 		int y  = newTile.yPos();
 		
 		// Check to see if any of the surrounding tiles are controlled by the user
-		// For loops to check the 3x3 grid around the single tile
+		// Nested loops to check the 3x3 grid around the single tile
 		for (int i = -1; i <= 1; i++) {
 			for (int ii = -1; ii <= 1; ii++) {
 				try {

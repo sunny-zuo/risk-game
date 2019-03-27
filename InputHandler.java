@@ -31,6 +31,9 @@ public class InputHandler {
 		else if (commandArray[0].equalsIgnoreCase("build")) {
 			runBuildCommand(commandArray);
 		}
+		else if (commandArray[0].equalsIgnoreCase("attack")) {
+			runBattleCommand(commandArray);
+		}
 		else {
 			System.out.println("Invalid command. Type 'help' to get a list of commands");
 		}
@@ -43,7 +46,8 @@ public class InputHandler {
 		System.out.println("> List of Possible Moves:"
 			+ "\n   help - lists possible moves"
 			+ "\n   move [oldPosition] [newPosition] [troopCount] - moves troops from one tile to another"
-			+ "\n   build [tile] - builds a building on the specified tile. A building costs " + GameEngine.buildingCost + " gold and gives " + (GameEngine.buildingRate - GameEngine.tileRate) + " more gold per turn.");
+			+ "\n   build [tile] - builds a building on the specified tile. A building costs " + GameEngine.buildingCost + " gold and gives " + (GameEngine.buildingRate - GameEngine.tileRate) + " more gold per turn."
+			+ "\n   attack [attackingTile] [newTile]");
 	}
 	private void runMoveCommand(String[] commandArray) {
 		if (commandArray.length > 3) {
@@ -57,6 +61,9 @@ public class InputHandler {
 	
 	private void runBuildCommand(String[] commandArray) {
 		GameEngine.placeBuilding(commandArray[1], "PC");
+	}
+	private void runBattleCommand(String[] commandArray) {
+		GameEngine.attackTile(commandArray[1], commandArray[2], "PC");
 	}
 
 }
