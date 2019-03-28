@@ -31,8 +31,11 @@ public class InputHandler {
 		else if (commandArray[0].equalsIgnoreCase("build")) {
 			runBuildCommand(commandArray);
 		}
-		else if (commandArray[0].equalsIgnoreCase("attack")) {
+		else if (commandArray[0].equalsIgnoreCase("attack") || commandArray[0].equalsIgnoreCase("atk")) {
 			runBattleCommand(commandArray);
+		}
+		else if (commandArray[0].equalsIgnoreCase("recruit")) {
+			runRecruitCommand(commandArray);
 		}
 		else {
 			System.out.println("Invalid command. Type 'help' to get a list of commands");
@@ -47,12 +50,21 @@ public class InputHandler {
 			+ "\n   help - lists possible moves"
 			+ "\n   move [oldPosition] [newPosition] [troopCount] - moves troops from one tile to another"
 			+ "\n   build [tile] - builds a building on the specified tile. A building costs " + GameEngine.buildingCost + " gold and gives " + (GameEngine.buildingRate - GameEngine.tileRate) + " more gold per turn."
-			+ "\n   attack [attackingTile] [newTile]");
+			+ "\n   attack [attackingTile] [attackedTile] - attack a tile the opponent controls"
+			+ "\n   recruit [tile] [troopCount] - recruits new troops to the tile. A troop costs " + GameEngine.unitCost + " gold and has an upkeep cost of " + GameEngine.unitUpkeep + " gold per turn");
 	}
 	private void runMoveCommand(String[] commandArray) {
-		if (commandArray.length > 3) {
+		if (commandArray.length == 4) {
+			int troopCount;
+			try {
+				troopCount = Integer.valueOf(commandArray[3]);
+			}
+			catch (Exception e) {
+				System.out.println("That is not a valid number of troops.");
+				return;
+			}
 			// Move troops from one tile to another
-			GameEngine.moveUnits(commandArray[1], commandArray[2], Integer.valueOf(commandArray[3]), "PC");
+			GameEngine.moveUnits(commandArray[1], commandArray[2], troopCount, "PC");
 		}
 		else {
 			System.out.println("That is not a valid command.");
@@ -60,10 +72,36 @@ public class InputHandler {
 	}
 	
 	private void runBuildCommand(String[] commandArray) {
-		GameEngine.placeBuilding(commandArray[1], "PC");
+		if (commandArray.length == 2) {
+			GameEngine.placeBuilding(commandArray[1], "PC");
+		}
+		else {
+			System.out.println("That is not a valid command.");
+		}
 	}
 	private void runBattleCommand(String[] commandArray) {
-		GameEngine.attackTile(commandArray[1], commandArray[2], "PC");
+		if (commandArray.length == 3) {
+			GameEngine.attackTile(commandArray[1], commandArray[2], "PC");
+		}
+		else {
+			System.out.println("That is not a valid command.");
+		}
+	}
+	private void runRecruitCommand(String[] commandArray) {
+		if (commandArray.length == 3) {
+			int troopCount;
+			try {
+				troopCount = Integer.valueOf(commandArray[2]);
+			}
+			catch (Exception e) {
+				System.out.println("That is not a valid number of troops.");
+				return;
+			}
+			GameEngine.recruitUnits(commandArray[1], troopCount, "PC");
+		}
+		else {
+			System.out.println("That is not a valid command.");
+		}
 	}
 
 }

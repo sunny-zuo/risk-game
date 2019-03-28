@@ -6,8 +6,8 @@ public class GameEngine {
 	public InputHandler inputHandler;
 	
 	public static int tileRate = 2; // sets gold payment per tile controlled
-	public static int buildingRate = 5; // sets gold payment per building controlled
-	public static int unitCost = 2; // sets cost of each unit
+	public static int buildingRate = 6; // sets gold payment per building controlled
+	public static int unitCost = 3; // sets cost of each unit
 	public static int unitUpkeep = 1; // sets the upkeep cost of each unit per turn
 	public static int buildingCost = 14; // sets cost of a building
 	
@@ -78,7 +78,15 @@ public class GameEngine {
 	}
 	
 	public static void placeBuilding(String inputTile, String control) {
-		Coordinate tile = new Coordinate(inputTile);
+		Coordinate tile;
+		// Verify the coordinate is valid
+		try {
+			tile = new Coordinate(inputTile);
+		}
+		catch (Exception e) {
+			System.out.println("Incorrect coordinates entered.");
+			return;
+		}
 		
 		// Verify the player has enough gold for a building
 		if (GameBoard.playerGold < GameEngine.buildingCost) {
@@ -179,8 +187,8 @@ public class GameEngine {
 				defRolls[1] = temp1;
 			}
 			
-			System.out.println("atk rolls: " + atkRolls[0] + atkRolls[1] + atkRolls[2]);
-			System.out.println("def rolls: " + defRolls[0] + defRolls[1]);
+			// System.out.println("atk rolls: " + atkRolls[0] + atkRolls[1] + atkRolls[2]);
+			// System.out.println("def rolls: " + defRolls[0] + defRolls[1]);
 			
 			if (atkRolls[0] > defRolls[0]) { // if attacker rolled higher than defending, they win
 				defTroops -= 1;
@@ -216,6 +224,34 @@ public class GameEngine {
 		}
 
 	}
+	
+	public static void recruitUnits(String inputTile, int troopCount, String control) {
+		Coordinate tile;
+		// Verify the coordinate is valid
+		try {
+			tile = new Coordinate(inputTile);
+		}
+		catch (Exception e) {
+			System.out.println("Incorrect coordinates entered.");
+			return;
+		}
+		// Verify the player is adding troops to tiles they control
+		if (GameBoard.tileControl(tile.xPos(), tile.yPos()) != control) {
+			System.out.println("You can only recruit units to tiles you control.");
+			return;
+		}
+		// Verify the player can afford the troops
+		if (GameBoard.playerGold >= troopCount * GameEngine.unitCost) {
+			GameBoard.playerGold -= troopCount * GameEngine.unitCost;
+			GameBoard.gameBoard[tile.xPos()][tile.yPos()].troops += troopCount;
+			System.out.println(troopCount + " troops have been recruited to tile " + inputTile + ".");
+		}
+		else {
+			System.out.println("You do not have enough gold to recruit " + troopCount + " units.");
+		}
+		
+		
+	}
 	public static Boolean validateCoordinates(Coordinate newTile, String control) {
 		int x = newTile.xPos();
 		int y  = newTile.yPos();
@@ -230,7 +266,7 @@ public class GameEngine {
 						return true;
 					}
 				} catch (Exception e) {
-					// do nothing
+					// do nothing if tile is invalid (such as -1, -1)
 				}
 			}
 		}
