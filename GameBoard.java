@@ -2,9 +2,11 @@ package civGame;
 
 public class GameBoard {
 	
-	public static GameTile[][] gameBoard = new GameTile[5][5];
+	public static GameTile[][] gameBoard = new GameTile[5][5]; // 5x5 array that represents game board
 	public static int playerGold;
 	public static int aiGold;
+	public static int maxLength[] = {0, 0, 0, 0, 0}; // maximum character length in each column
+	public static int gameBoardWidth = 5;
 	
 	public static void createGame() {
 		// Generate an array of GameTile objects that store information
@@ -32,8 +34,29 @@ public class GameBoard {
 	
 	public static void drawGameState() {
 		// Method that draws the game board
-		String gameBoard = "    1   2   3   4   5  \n";
+		String gameBoard = "   ";
 		String coordY[] = {"A", "B", "C", "D", "E"};
+		
+		gameBoardWidth = 5;
+		maxLength = new int[5];
+		// Determine the longest possible tile entry to align all tiles
+		for (int i = 0; i < 5; i++) {
+			for (int j = 0; j < 5; j++) {
+				if (tileDisplay(i, j).length() > maxLength[j]) {
+					maxLength[j] = tileDisplay(i, j).length();
+				}
+			}
+			gameBoardWidth += maxLength[i] + 2; // add the longest length in the column to gameBoardWidth with an addition 2 due to spacing
+		}
+		
+		
+		// Line up the numerical coordinates at the top of the game board with the width of the tiles
+		for (int i = 1; i <= 5; i++) {
+			// add spaces based on width in each column. coordinates are 1-5 while array is 0-4 so 1 less is used
+			gameBoard += addSpaces(String.valueOf(i), i - 1);
+			gameBoard += " "; // add spaces at the end as this is added when building columns
+		}
+		gameBoard += "\n";
 		
 		// loop through each line and combine each tile to create the game board
 		for (int i = 0; i < 5; i++) {
@@ -58,7 +81,13 @@ public class GameBoard {
 				break;
 			}
 		}
-		gameBoard += "  ——————————————————————\nEnter a move: ";
+		
+		// Draw the bottom line
+		gameBoard += "  ";
+		for (int i = 0; i < gameBoardWidth; i++) {
+			gameBoard += "—";
+		}
+		gameBoard += "——\nEnter a move: ";
 		
 		System.out.print(gameBoard);
 	}
@@ -129,8 +158,11 @@ public class GameBoard {
 				if (troopCount(x, y) == 0) {
 					return buildingInfo(x, y);
 				}
-				else {
+				else if (buildingInfo(x, y) == " ") {
 					return Integer.toString(troopCount(x, y));
+				}
+				else {
+					return buildingInfo(x, y) + Integer.toString(troopCount(x, y));
 				}
 			}
 			// Throw error if the tile does not exist
@@ -144,11 +176,11 @@ public class GameBoard {
 		if (gameBoard[x][y] != null) {
 			switch (tileControl(x, y)) {
 				case "NONE":
-					return " - ";
+					return addSpaces(" - ", y);
 				case "PC":
-					return "[" + tileDisplay(x,y) + "]";
+					return addSpaces("[" + tileDisplay(x,y) + "]", y);
 				case "NPC":
-					return "(" + tileDisplay(x,y) + ")";
+					return addSpaces("(" + tileDisplay(x,y) + ")", y);
 				default:
 					throw new IllegalArgumentException("Game board does not exist.");
 			}
@@ -156,5 +188,17 @@ public class GameBoard {
 		else {
 			throw new IllegalArgumentException("Game board does not exist.");
 		}
+	}
+
+	public static String addSpaces(String text, int column) {
+		// Add spaces to the input string until it reaches the size of the longest string in the column to align
+		// 2 is added because the maxLength int does not include [], () or the two spaces
+		while (text.length() < maxLength[column] + 2) {
+			text = " " + text;
+			if (text.length() < maxLength[column] + 2) {
+				text += " ";
+			}
+		}
+		return text;
 	}
 }

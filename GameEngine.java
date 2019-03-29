@@ -39,7 +39,7 @@ public class GameEngine {
 			return;
 		}
 		// Validate that the user is moving to an adjacent tile
-		if (!validateCoordinates(newPos, "PC")) {
+		if (!validateCoordinates(newPos, control)) {
 			System.out.println("You can only move to tiles adjacent to ones you control.");
 			return;
 		}
@@ -57,7 +57,7 @@ public class GameEngine {
 							GameBoard.gameBoard[newPos.xPos()][newPos.yPos()].canMove = false;
 						}
 						GameBoard.gameBoard[newPos.xPos()][newPos.yPos()].troops += troopCount;
-						GameBoard.gameBoard[newPos.xPos()][newPos.yPos()].control = "PC";
+						GameBoard.gameBoard[newPos.xPos()][newPos.yPos()].control = control;
 						System.out.println(troopCount + " troops have been moved from " + oldTile + " to " + newTile + ".");
 					}
 					else {
@@ -98,14 +98,9 @@ public class GameEngine {
 		if (GameBoard.gameBoard[tile.xPos()] [tile.yPos()].control == control) {
 			// Verify there is no building already present
 			if (GameBoard.gameBoard[tile.xPos()][tile.yPos()].building == " ") {
-				if (GameBoard.gameBoard[tile.xPos()][tile.yPos()].troops <= 0) {
-					GameBoard.playerGold -= GameEngine.buildingCost;
-					GameBoard.gameBoard[tile.xPos()][tile.yPos()].building = "B";
-					System.out.println("A building has been placed on tile " + inputTile);
-				}
-				else {
-					System.out.println("You can not place a building on a tile where troops are located.");
-				}
+				GameBoard.playerGold -= GameEngine.buildingCost;
+				GameBoard.gameBoard[tile.xPos()][tile.yPos()].building = "B";
+				System.out.println("A building has been placed on tile " + inputTile);
 			}
 			else {
 				System.out.println("There is already a building on that tile.");
@@ -172,7 +167,7 @@ public class GameEngine {
 			
 			// Sort the array in descending order
 			Arrays.sort(atkRolls); // sorts in ascending order
-			int temp = atkRolls[2]; // switch the first and third value
+			int temp = atkRolls[2]; // switch the first and third value to put values in descending order
 			atkRolls[2] = atkRolls[0];
 			atkRolls[0] = temp;
 			
