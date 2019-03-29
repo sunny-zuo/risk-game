@@ -23,16 +23,16 @@ public class GameBoard {
 		}
 		
 		// Set the player and AI's starting location (two corners)
-		gameBoard[0][0].control = "PC";
+		gameBoard[0][0].control = "P1";
 		gameBoard[0][0].troops = 5;
-		gameBoard[4][4].control = "NPC";
+		gameBoard[4][4].control = "P2";
 		gameBoard[4][4].troops = 5;
 		
-		playerGold = 8;
+		playerGold = 448;
 		aiGold = 8;
 	}
 	
-	public static void drawGameState() {
+	public static void drawGameState(String player) {
 		// Method that draws the game board
 		String gameBoard = "   ";
 		String coordY[] = {"A", "B", "C", "D", "E"};
@@ -68,13 +68,23 @@ public class GameBoard {
 			// Draw the lines to the right of the board and add any information needed
 			switch (i) {
 			case 0:
-				gameBoard += "| [X] = Controlled by You \n";
+				if (player == "P1") {
+					gameBoard += "| [X] = Controlled by You \n";
+				}
+				else if (player == "P2") {
+					gameBoard += "| (X) = Controlled by You \n";
+				}
 				break;
 			case 1:
 				gameBoard += "| Gold Balance: " + playerGold + "\n";
 				break;
 			case 2:
-				gameBoard += "| Estimated Gold Income: " + calculateGoldIncome("PC") + "\n";
+				if (player == "P1") {
+					gameBoard += "| Estimated Gold Income: " + calculateGoldIncome("P1") + "\n";
+				}
+				else if (player == "P2") {
+					gameBoard += "| Estimated Gold Income: " + calculateGoldIncome("P2") + "\n";
+				}
 				break;
 			default:
 				gameBoard += "|\n";
@@ -177,9 +187,9 @@ public class GameBoard {
 			switch (tileControl(x, y)) {
 				case "NONE":
 					return addSpaces(" - ", y);
-				case "PC":
+				case "P1":
 					return addSpaces("[" + tileDisplay(x,y) + "]", y);
-				case "NPC":
+				case "P2":
 					return addSpaces("(" + tileDisplay(x,y) + ")", y);
 				default:
 					throw new IllegalArgumentException("Game board does not exist.");

@@ -7,16 +7,16 @@ public class InputHandler {
 	public Scanner inputScanner = new Scanner(System.in);
 	private String[] commandArray;
 	
-	public void handleInput() {
+	public void handleInput(String player) {
 		try {
-			parseInput(inputScanner.nextLine());
+			parseInput(inputScanner.nextLine(), player);
 		}
 		catch (Exception e) {
 			System.out.println("error:" + e);
 		}
 	}
 	
-	private void parseInput(String input) {
+	private void parseInput(String input, String control) {
 		commandArray = input.split(" ");
 		/* Divide input into an array and separate them by spaces to allow
 		 * each individual command part to be handled
@@ -26,16 +26,16 @@ public class InputHandler {
 			runHelpCommand();
 		}
 		else if (commandArray[0].equalsIgnoreCase("move")) {
-			runMoveCommand(commandArray);
+			runMoveCommand(commandArray, control);
 		}
 		else if (commandArray[0].equalsIgnoreCase("build")) {
-			runBuildCommand(commandArray);
+			runBuildCommand(commandArray, control);
 		}
 		else if (commandArray[0].equalsIgnoreCase("attack") || commandArray[0].equalsIgnoreCase("atk")) {
-			runBattleCommand(commandArray);
+			runBattleCommand(commandArray, control);
 		}
 		else if (commandArray[0].equalsIgnoreCase("recruit")) {
-			runRecruitCommand(commandArray);
+			runRecruitCommand(commandArray, control);
 		}
 		else {
 			System.out.println("Invalid command. Type 'help' to get a list of commands");
@@ -53,7 +53,7 @@ public class InputHandler {
 			+ "\n   attack [attackingTile] [attackedTile] - attack a tile the opponent controls"
 			+ "\n   recruit [tile] [troopCount] - recruits new troops to the tile. A troop costs " + GameEngine.unitCost + " gold and has an upkeep cost of " + GameEngine.unitUpkeep + " gold per turn");
 	}
-	private void runMoveCommand(String[] commandArray) {
+	private void runMoveCommand(String[] commandArray, String control) {
 		if (commandArray.length == 4) {
 			int troopCount;
 			try {
@@ -64,30 +64,30 @@ public class InputHandler {
 				return;
 			}
 			// Move troops from one tile to another
-			GameEngine.moveUnits(commandArray[1], commandArray[2], troopCount, "PC");
+			GameEngine.moveUnits(commandArray[1], commandArray[2], troopCount, control);
 		}
 		else {
 			System.out.println("That is not a valid command.");
 		}
 	}
 	
-	private void runBuildCommand(String[] commandArray) {
+	private void runBuildCommand(String[] commandArray, String control) {
 		if (commandArray.length == 2) {
-			GameEngine.placeBuilding(commandArray[1], "PC");
+			GameEngine.placeBuilding(commandArray[1], control);
 		}
 		else {
 			System.out.println("That is not a valid command.");
 		}
 	}
-	private void runBattleCommand(String[] commandArray) {
+	private void runBattleCommand(String[] commandArray, String control) {
 		if (commandArray.length == 3) {
-			GameEngine.attackTile(commandArray[1], commandArray[2], "PC");
+			GameEngine.attackTile(commandArray[1], commandArray[2], control);
 		}
 		else {
 			System.out.println("That is not a valid command.");
 		}
 	}
-	private void runRecruitCommand(String[] commandArray) {
+	private void runRecruitCommand(String[] commandArray, String control) {
 		if (commandArray.length == 3) {
 			int troopCount;
 			try {
@@ -97,7 +97,7 @@ public class InputHandler {
 				System.out.println("That is not a valid number of troops.");
 				return;
 			}
-			GameEngine.recruitUnits(commandArray[1], troopCount, "PC");
+			GameEngine.recruitUnits(commandArray[1], troopCount, control);
 		}
 		else {
 			System.out.println("That is not a valid command.");

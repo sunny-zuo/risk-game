@@ -11,18 +11,18 @@ public class GameEngine {
 	public static int unitUpkeep = 1; // sets the upkeep cost of each unit per turn
 	public static int buildingCost = 14; // sets cost of a building
 	
-	protected Boolean playerTurn = true;
+	protected String playerTurn = "P1";
 	
 	public GameEngine() {
 		inputHandler = new InputHandler();
-		runPlayerTurn();
+		runPlayer1Turn();
 	}
-	private void runPlayerTurn() {
-		GameBoard.playerGold += GameBoard.calculateGoldIncome("PC");
-		while (playerTurn) {
-			// During the player's turn, draw the game board and wait for them to enter a command
-			GameBoard.drawGameState();
-			inputHandler.handleInput();
+	private void runPlayer1Turn() {
+		GameBoard.playerGold += GameBoard.calculateGoldIncome("P1");
+		while (playerTurn == "P1") {
+			// During the player 1's turn, draw the game board and wait for them to enter a command
+			GameBoard.drawGameState(playerTurn);
+			inputHandler.handleInput(playerTurn);
 		}
 	}
 	public static void moveUnits(String oldTile, String newTile, int troopCount, String control) {
