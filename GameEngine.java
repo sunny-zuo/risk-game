@@ -52,6 +52,14 @@ public class GameEngine {
 			}
 		}
 	}
+	
+	public static void resetBoard() {
+		for (int i = 0; i < 5; i++) {
+			for (int j = 0; j < 5; j++) {
+				GameBoard.gameBoard[i][j].canMove = true;
+			}
+		}
+	}
 	public static void moveUnits(String oldTile, String newTile, int troopCount, String control) {
 		Coordinate oldPos;
 		Coordinate newPos;

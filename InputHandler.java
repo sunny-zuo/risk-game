@@ -39,6 +39,7 @@ public class InputHandler {
 		}
 		else if (commandArray[0].equalsIgnoreCase("end")) {
 			endTurn(control);
+			GameEngine.resetBoard();
 		}
 		else {
 			System.out.println("Invalid command. Type 'help' to get a list of commands");
