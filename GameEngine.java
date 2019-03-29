@@ -18,7 +18,7 @@ public class GameEngine {
 		runPlayer1Turn();
 	}
 	private void runPlayer1Turn() {
-		GameBoard.playerGold += GameBoard.calculateGoldIncome("P1");
+		GameBoard.player1Gold += GameBoard.calculateGoldIncome("P1");
 		while (playerTurn == "P1") {
 			// During the player 1's turn, draw the game board and wait for them to enter a command
 			GameBoard.drawGameState(playerTurn);
@@ -89,7 +89,7 @@ public class GameEngine {
 		}
 		
 		// Verify the player has enough gold for a building
-		if (GameBoard.playerGold < GameEngine.buildingCost) {
+		if (checkBalance(control, GameEngine.buildingCost, false)) {
 			System.out.println("You do not have enough gold to purchase the building.");
 			return;
 		}
@@ -98,7 +98,7 @@ public class GameEngine {
 		if (GameBoard.gameBoard[tile.xPos()] [tile.yPos()].control == control) {
 			// Verify there is no building already present
 			if (GameBoard.gameBoard[tile.xPos()][tile.yPos()].building == " ") {
-				GameBoard.playerGold -= GameEngine.buildingCost;
+				checkBalance(control, GameEngine.buildingCost, true);
 				GameBoard.gameBoard[tile.xPos()][tile.yPos()].building = "B";
 				System.out.println("A building has been placed on tile " + inputTile);
 			}
@@ -236,8 +236,7 @@ public class GameEngine {
 			return;
 		}
 		// Verify the player can afford the troops
-		if (GameBoard.playerGold >= troopCount * GameEngine.unitCost) {
-			GameBoard.playerGold -= troopCount * GameEngine.unitCost;
+		if (checkBalance(control, GameEngine.unitCost * troopCount, true)) {
 			GameBoard.gameBoard[tile.xPos()][tile.yPos()].troops += troopCount;
 			System.out.println(troopCount + " troops have been recruited to tile " + inputTile + ".");
 		}
@@ -267,5 +266,32 @@ public class GameEngine {
 		}
 		// Disallow movement
 		return false;
+	}
+	
+	public static Boolean checkBalance(String player, int cost, Boolean charge) {
+		// Method that checks a player has enough balance to pay for something, and optionally charge them for it.
+		if (player == "P1") {
+			if (GameBoard.player1Gold >= cost) {
+				if (charge) {
+					GameBoard.player1Gold -= cost;
+				}
+				return true;
+			} else {
+				return false;
+			}
+		}
+		else if (player == "P2") {
+			if (GameBoard.player2Gold >= cost) {
+				if (charge) {
+					GameBoard.player2Gold -= cost;
+				}
+				return true;
+			} else {
+				return false;
+			}
+		}
+		else {
+			throw new IllegalArgumentException("Invalid player");
+		}
 	}
 }

@@ -3,8 +3,8 @@ package civGame;
 public class GameBoard {
 	
 	public static GameTile[][] gameBoard = new GameTile[5][5]; // 5x5 array that represents game board
-	public static int playerGold;
-	public static int aiGold;
+	public static int player1Gold;
+	public static int player2Gold;
 	public static int maxLength[] = {0, 0, 0, 0, 0}; // maximum character length in each column
 	public static int gameBoardWidth = 5;
 	
@@ -22,14 +22,14 @@ public class GameBoard {
 			}
 		}
 		
-		// Set the player and AI's starting location (two corners)
+		// Set the starting position of both players in opposite corners
 		gameBoard[0][0].control = "P1";
 		gameBoard[0][0].troops = 5;
 		gameBoard[4][4].control = "P2";
 		gameBoard[4][4].troops = 5;
 		
-		playerGold = 448;
-		aiGold = 8;
+		player1Gold = 448;
+		player2Gold = 8;
 	}
 	
 	public static void drawGameState(String player) {
@@ -76,7 +76,13 @@ public class GameBoard {
 				}
 				break;
 			case 1:
-				gameBoard += "| Gold Balance: " + playerGold + "\n";
+				if (player == "P1") {
+					gameBoard += "| Gold Balance: " + player1Gold + "\n";
+				}
+				else if (player == "P2") {
+					gameBoard += "| Gold Balance: " + player2Gold + "\n";
+				}
+				
 				break;
 			case 2:
 				if (player == "P1") {
