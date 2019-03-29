@@ -10,19 +10,46 @@ public class GameEngine {
 	public static int unitCost = 3; // sets cost of each unit
 	public static int unitUpkeep = 1; // sets the upkeep cost of each unit per turn
 	public static int buildingCost = 14; // sets cost of a building
-	
-	protected String playerTurn = "P1";
+	public static String gameWon = "NONE";
+	public static String playerTurn = "P2";
 	
 	public GameEngine() {
 		inputHandler = new InputHandler();
-		runPlayer1Turn();
+		runPlayerTurns();
 	}
-	private void runPlayer1Turn() {
-		GameBoard.player1Gold += GameBoard.calculateGoldIncome("P1");
-		while (playerTurn == "P1") {
-			// During the player 1's turn, draw the game board and wait for them to enter a command
-			GameBoard.drawGameState(playerTurn);
-			inputHandler.handleInput(playerTurn);
+	private void runPlayerTurns() {
+		inputHandler.parseInput("end", "P2");
+		while (gameWon == "NONE") { // while the game is not won, keep looping through each player's moves
+			while (playerTurn == "P1") {
+				// During the player 1's turn, draw the game board and wait for them to enter a command
+				GameBoard.drawGameState(playerTurn);
+				inputHandler.handleInput(playerTurn);
+				if (checkWin() == true) {
+					if (gameWon == "P1") {
+						System.out.println("Player 1 is the winner!");
+						return;
+					}
+					else if (gameWon == "P2") {
+						System.out.println("Player 2 is the winner!");
+						return;
+					}
+				}
+			}
+			while (playerTurn == "P2") {
+				// During the player 2's turn, draw the game board and wait for them to enter a command
+				GameBoard.drawGameState(playerTurn);
+				inputHandler.handleInput(playerTurn);
+				if (checkWin() == true) {
+					if (gameWon == "P1") {
+						System.out.println("Player 1 is the winner!");
+						return;
+					}
+					else if (gameWon == "P2") {
+						System.out.println("Player 2 is the winner!");
+						return;
+					}
+				}
+			}
 		}
 	}
 	public static void moveUnits(String oldTile, String newTile, int troopCount, String control) {
@@ -89,7 +116,7 @@ public class GameEngine {
 		}
 		
 		// Verify the player has enough gold for a building
-		if (checkBalance(control, GameEngine.buildingCost, false)) {
+		if (!checkBalance(control, GameEngine.buildingCost, false)) {
 			System.out.println("You do not have enough gold to purchase the building.");
 			return;
 		}
@@ -246,6 +273,7 @@ public class GameEngine {
 		
 		
 	}
+	
 	public static Boolean validateCoordinates(Coordinate newTile, String control) {
 		int x = newTile.xPos();
 		int y  = newTile.yPos();
@@ -292,6 +320,52 @@ public class GameEngine {
 		}
 		else {
 			throw new IllegalArgumentException("Invalid player");
+		}
+	}
+
+	public static void killRandom(String player) {
+		while (true) {
+			int x = (int) Math.floor(Math.random()*5);
+			int y = (int) Math.floor(Math.random()*5);
+			if (GameBoard.gameBoard[x][y].control == player && GameBoard.gameBoard[x][y].troops > 0) {
+				GameBoard.gameBoard[x][y].troops -= 1;
+				if (GameBoard.gameBoard[x][y].troops == 0) {
+					GameBoard.gameBoard[x][y].control = "NONE";
+				}
+				return;
+			}
+		}
+	}
+
+	public static Boolean checkWin() {
+		Boolean p1 = false;
+		Boolean p2 = false;
+		
+		for (int i = 0; i < 5; i++) {
+			for (int j = 0; j < 5; j++) {
+				if (GameBoard.tileControl(i, j) == "P1") {
+					p1 = true;
+				}
+				if (GameBoard.tileControl(i, j) == "P2") {
+					p2 = true;
+				}
+			}
+		}
+		
+		if (p1 && p2) {
+			gameWon = "NONE";
+			return false;
+		}
+		else if (p1 && !p2) {
+			gameWon = "P1";
+			return true;
+		}
+		else if (!p2 && p2) {
+			gameWon = "P2";
+			return true;
+		}
+		else {
+			throw new IllegalArgumentException("Game board does not exist or both players have somehow died");
 		}
 	}
 }

@@ -26,9 +26,9 @@ public class GameBoard {
 		gameBoard[0][0].control = "P1";
 		gameBoard[0][0].troops = 5;
 		gameBoard[4][4].control = "P2";
-		gameBoard[4][4].troops = 5;
+		gameBoard[4][4].troops = 7;
 		
-		player1Gold = 448;
+		player1Gold = 8;
 		player2Gold = 8;
 	}
 	
