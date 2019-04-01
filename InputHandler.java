@@ -59,10 +59,10 @@ public class InputHandler {
 			+ "\n   end - end your turn");
 	}
 	private void runMoveCommand(String[] commandArray, String control) {
-		if (commandArray.length == 4) {
+		if (commandArray.length == 4) { // verify the correct number of arguments were provided
 			int troopCount;
 			try {
-				troopCount = Integer.valueOf(commandArray[3]);
+				troopCount = Integer.valueOf(commandArray[3]); // attempt to convert the troop count into a valid integer
 			}
 			catch (Exception e) {
 				System.out.println("That is not a valid number of troops.");
@@ -77,7 +77,7 @@ public class InputHandler {
 	}
 	
 	private void runBuildCommand(String[] commandArray, String control) {
-		if (commandArray.length == 2) {
+		if (commandArray.length == 2) { // verify that two arguments were provided and then run command
 			GameEngine.placeBuilding(commandArray[1], control);
 		}
 		else {
@@ -85,7 +85,7 @@ public class InputHandler {
 		}
 	}
 	private void runBattleCommand(String[] commandArray, String control) {
-		if (commandArray.length == 3) {
+		if (commandArray.length == 3) { // verify that three arguments were provided and then run command
 			GameEngine.attackTile(commandArray[1], commandArray[2], control);
 		}
 		else {
@@ -93,16 +93,16 @@ public class InputHandler {
 		}
 	}
 	private void runRecruitCommand(String[] commandArray, String control) {
-		if (commandArray.length == 3) {
+		if (commandArray.length == 3) { // verify that 3 arguments were provided
 			int troopCount;
 			try {
-				troopCount = Integer.valueOf(commandArray[2]);
+				troopCount = Integer.valueOf(commandArray[2]); // attempt to convert the String troop count into an int
 			}
 			catch (Exception e) {
 				System.out.println("That is not a valid number of troops.");
 				return;
 			}
-			GameEngine.recruitUnits(commandArray[1], troopCount, control);
+			GameEngine.recruitUnits(commandArray[1], troopCount, control); // run recruit method on GameEngine
 		}
 		else {
 			System.out.println("That is not a valid command.");
@@ -111,26 +111,26 @@ public class InputHandler {
 	private void endTurn(String control) {
 		if (control == "P1") {
 			System.out.println("Your move, Player 2.");
-			if (GameEngine.checkBalance("P2", GameBoard.calculateGoldIncome("P2") * -1, true)) {
-				if (GameBoard.calculateGoldIncome("P2") > 0) {
+			if (GameEngine.checkBalance("P2", GameBoard.calculateGoldIncome("P2") * -1, true)) { // charge player two the upkeep cost if they can afford it
+				if (GameBoard.calculateGoldIncome("P2") > 0) { // notify them the amount paid or earned
 					System.out.println("You have generated " + GameBoard.calculateGoldIncome("P2") + " gold this turn." );
 				}
 				else {
 					System.out.println("You have been charged " + GameBoard.calculateGoldIncome("P2") + " gold this turn from upkeep costs." );
 				}
 			}
-			else {
+			else { // if the player can't afford their upkeep, randomly kill their troops until they can afford it
 				int troopsKilled = 0;
 				while (!GameEngine.checkBalance("P2", GameBoard.calculateGoldIncome("P2") * -1, true)) {
 					GameEngine.killRandom("P2");
 					troopsKilled++;
 				}
-				System.out.println(troopsKilled + " troops have died as their upkeep cost could not be paid.");
+				System.out.println(troopsKilled + " troops have died as their upkeep cost could not be paid."); // notify player the troops that have died
 				System.out.println("You have been charged " + GameBoard.calculateGoldIncome("P2") + " gold this turn in upkeep costs." );
 			}
-			GameEngine.playerTurn = "P2";
+			GameEngine.playerTurn = "P2"; // switch the player turn
 		}
-		else if (control == "P2") {
+		else if (control == "P2") { // same checks except against P1's income
 			System.out.println("Your move, Player 1.");
 			if (GameEngine.checkBalance("P1", GameBoard.calculateGoldIncome("P1") * -1, true)) {
 				if (GameBoard.calculateGoldIncome("P1") > 0) {

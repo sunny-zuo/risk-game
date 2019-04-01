@@ -24,7 +24,7 @@ public class GameEngine {
 				// During the player 1's turn, draw the game board and wait for them to enter a command
 				GameBoard.drawGameState(playerTurn);
 				inputHandler.handleInput(playerTurn);
-				if (checkWin() == true) {
+				if (checkWin() == true) { // check to see if a player has won after each action
 					if (gameWon == "P1") {
 						System.out.println("Player 1 is the winner!");
 						return;
@@ -37,9 +37,9 @@ public class GameEngine {
 			}
 			while (playerTurn == "P2") {
 				// During the player 2's turn, draw the game board and wait for them to enter a command
-				GameBoard.drawGameState(playerTurn);
+				GameBoard.drawGameState(playerTurn); 
 				inputHandler.handleInput(playerTurn);
-				if (checkWin() == true) {
+				if (checkWin() == true) { // check to see if a player has won after each action
 					if (gameWon == "P1") {
 						System.out.println("Player 1 is the winner!");
 						return;
@@ -54,6 +54,7 @@ public class GameEngine {
 	}
 	
 	public static void resetBoard() {
+		// Loop through each instance in the gameBoard and allow movement from any tile
 		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < 5; j++) {
 				GameBoard.gameBoard[i][j].canMove = true;
@@ -84,19 +85,20 @@ public class GameEngine {
 			if (Arrays.asList(control, "NONE").contains(GameBoard.gameBoard[newPos.xPos()][newPos.yPos()].control)) {
 				// Check to see if units on that tile are able to move
 				if (GameBoard.gameBoard[oldPos.xPos()][oldPos.yPos()].canMove == true) {
-					// Check to see if enough troops are available to be moved
-					if (GameBoard.gameBoard[oldPos.xPos()][oldPos.yPos()].troops >= troopCount) {
+					// Check to see if enough troops are available to be moved. 1 troop must remain on a tile.
+					if (GameBoard.gameBoard[oldPos.xPos()][oldPos.yPos()].troops > troopCount) {
 						GameBoard.gameBoard[oldPos.xPos()][oldPos.yPos()].troops -= troopCount;
-						if (GameBoard.gameBoard[newPos.xPos()][newPos.yPos()].troops <= 0) {
-							// Disallow troops from moving if colonizing a new tile
-							GameBoard.gameBoard[newPos.xPos()][newPos.yPos()].canMove = false;
-						}
 						GameBoard.gameBoard[newPos.xPos()][newPos.yPos()].troops += troopCount;
 						GameBoard.gameBoard[newPos.xPos()][newPos.yPos()].control = control;
 						System.out.println(troopCount + " troops have been moved from " + oldTile + " to " + newTile + ".");
 					}
 					else {
+						if (GameBoard.gameBoard[oldPos.xPos()][oldPos.yPos()].troops == troopCount) {
+							System.out.println("You must leave at least one troop on each tile.");
+						}
+						else {
 						System.out.println("You cannot move more troops than you control.");
+						}
 					}
 				}
 				else {
@@ -183,6 +185,7 @@ public class GameEngine {
 			return;
 		}
 		
+		// Get the troop numbers on both sides
 		atkTroops = GameBoard.troopCount(oldPos.xPos(), oldPos.yPos());
 		defTroops = GameBoard.troopCount(newPos.xPos(), newPos.yPos());
 		
@@ -216,10 +219,7 @@ public class GameEngine {
 				defRolls[0] = defRolls[1];
 				defRolls[1] = temp1;
 			}
-			
-			// System.out.println("atk rolls: " + atkRolls[0] + atkRolls[1] + atkRolls[2]);
-			// System.out.println("def rolls: " + defRolls[0] + defRolls[1]);
-			
+
 			if (atkRolls[0] > defRolls[0]) { // if attacker rolled higher than defending, they win
 				defTroops -= 1;
 			}
@@ -227,7 +227,7 @@ public class GameEngine {
 				atkTroops -= 1;
 			}
 			
-			if (atkTroops > 1 && defTroops > 0) { // if attacker has troops to attack with and defender has troops to defend with, do second battle
+			if (atkTroops > 1 && defTroops > 0) { // if attacker has troops to attack with and defender still has troops to defend with, do second battle
 				if (atkRolls[1] > defRolls[1]) {
 					defTroops -= 1;
 				}
@@ -237,7 +237,7 @@ public class GameEngine {
 			}
 		}
 		
-		if (atkTroops > 1) {
+		if (atkTroops > 1) { // if attacker won
 			System.out.println("You won the battle for " + newTile + " and killed " + (GameBoard.troopCount(newPos.xPos(), newPos.yPos()) - defTroops) 
 					+ " troops, losing " + (GameBoard.troopCount(oldPos.xPos(), oldPos.yPos()) - atkTroops) + " troops in the process.");
 			// Set new game board status and force the player to move the lesser of 3 troops or the troops they control minus 1 to the new tile
@@ -245,7 +245,7 @@ public class GameEngine {
 			GameBoard.gameBoard[newPos.xPos()][newPos.yPos()].troops = Math.min(3, atkTroops - 1);
 			GameBoard.gameBoard[newPos.xPos()][newPos.yPos()].control = control;
 		}
-		else {
+		else { // if attacker lost
 			System.out.println("You lost the battle for " + newTile + " and killed " + (GameBoard.troopCount(newPos.xPos(), newPos.yPos()) - defTroops) 
 					+ " troops, losing " + (GameBoard.troopCount(oldPos.xPos(), oldPos.yPos()) - atkTroops) + " troops in the process.");
 			// Set each tile to the number of troops remaining. No change of control as attacker was unsuccessful.
@@ -277,9 +277,7 @@ public class GameEngine {
 		}
 		else {
 			System.out.println("You do not have enough gold to recruit " + troopCount + " units.");
-		}
-		
-		
+		}	
 	}
 	
 	public static Boolean validateCoordinates(Coordinate newTile, String control) {
@@ -332,13 +330,14 @@ public class GameEngine {
 	}
 
 	public static void killRandom(String player) {
-		while (true) {
-			int x = (int) Math.floor(Math.random()*5);
+		while (true) { // keep running until the loop exits
+			int x = (int) Math.floor(Math.random()*5); // generate random coordinates on the game board
 			int y = (int) Math.floor(Math.random()*5);
 			if (GameBoard.gameBoard[x][y].control == player && GameBoard.gameBoard[x][y].troops > 0) {
+				// if a troop controlled by the player exists, kill one troop
 				GameBoard.gameBoard[x][y].troops -= 1;
 				if (GameBoard.gameBoard[x][y].troops == 0) {
-					GameBoard.gameBoard[x][y].control = "NONE";
+					GameBoard.gameBoard[x][y].control = "NONE"; // reset control if all troops die
 				}
 				return;
 			}
@@ -349,6 +348,7 @@ public class GameEngine {
 		Boolean p1 = false;
 		Boolean p2 = false;
 		
+		// check all tiles to see if any are controlled by both players
 		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < 5; j++) {
 				if (GameBoard.tileControl(i, j) == "P1") {

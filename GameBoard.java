@@ -11,7 +11,7 @@ public class GameBoard {
 	public static void createGame() {
 		// Generate an array of GameTile objects that store information
 		
-		// Set board starting position
+		// create the 5x5 board by adding GameTile objects to represent each tile and set the default values
 		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < 5; j++) {
 				gameBoard[i][j] = new GameTile();
@@ -26,7 +26,7 @@ public class GameBoard {
 		gameBoard[0][0].control = "P1";
 		gameBoard[0][0].troops = 5;
 		gameBoard[4][4].control = "P2";
-		gameBoard[4][4].troops = 7;
+		gameBoard[4][4].troops = 7; // p2 is given 2 extra troops to balance the advantage from going first
 		
 		player1Gold = 8;
 		player2Gold = 8;
@@ -37,8 +37,8 @@ public class GameBoard {
 		String gameBoard = "   ";
 		String coordY[] = {"A", "B", "C", "D", "E"};
 		
-		gameBoardWidth = 5;
-		maxLength = new int[5];
+		gameBoardWidth = 5; // reset width to 5 to account for extra spaces in the game board
+		maxLength = new int[5]; // reset the five value array to all 0s
 		// Determine the longest possible tile entry to align all tiles
 		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < 5; j++) {
@@ -62,7 +62,7 @@ public class GameBoard {
 		for (int i = 0; i < 5; i++) {
 			gameBoard += coordY[i] + " |";
 			for (int j = 0; j < 5; j++) {
-				gameBoard += drawTile(i, j) + " ";
+				gameBoard += drawTile(i, j) + " "; // add the value that should appear from the drawTile method
 			}
 			
 			// Draw the lines to the right of the board and add any information needed
@@ -103,6 +103,7 @@ public class GameBoard {
 		for (int i = 0; i < gameBoardWidth; i++) {
 			gameBoard += "—";
 		}
+		// Write the move prompt on a new line
 		gameBoard += "——\nEnter a move: ";
 		
 		System.out.print(gameBoard);
@@ -110,19 +111,19 @@ public class GameBoard {
 	
 	public static int calculateGoldIncome(String player) {
 		int goldIncome = 0;
-		// If gameBoard exists, increase goldIncome by the tiles and buildings controlled by the player
+		// If gameBoard exists, increase goldIncome by the tiles and buildings controlled by the player and decrease
 		if (gameBoard != null) {
 			for (int i = 0; i < 5; i++) {
 				for (int j = 0; j < 5; j++) {
 					if (tileControl(i, j) == player) {
-						if (buildingInfo(i, j) == "B" ) {
+						if (buildingInfo(i, j) == "B" ) { // if building exists, increase income by building rate
 							goldIncome += GameEngine.buildingRate;
 						}
-						else {
+						else { // if no building exists, increase income by the tile rate
 							goldIncome += GameEngine.tileRate;
-							if (troopCount(i,j) != 0) {
-								goldIncome -= GameEngine.unitUpkeep * troopCount(i,j);
-							}
+						}
+						if (troopCount(i,j) != 0) { // if troops exist, subtract unitUpkeep for each troop
+							goldIncome -= GameEngine.unitUpkeep * troopCount(i,j);
 						}
 					}
 				}
@@ -209,6 +210,7 @@ public class GameBoard {
 	public static String addSpaces(String text, int column) {
 		// Add spaces to the input string until it reaches the size of the longest string in the column to align
 		// 2 is added because the maxLength int does not include [], () or the two spaces
+		// Spaces alternate between left and right to center each tile as best as possible
 		while (text.length() < maxLength[column] + 2) {
 			text = " " + text;
 			if (text.length() < maxLength[column] + 2) {
